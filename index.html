@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Desempenho Life Varizes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --verde:#1F6B2E;--verde-md:#2E8B45;--verde-lt:#E8F5E9;--verde-bdr:#A5D6A7;
+  --azul:#1F3864;--azul-md:#185FA5;--azul-lt:#EBF3FF;--azul-bdr:#90CAF9;
+  --cinza-dk:#1a1a2e;--cinza-md:#64748b;--cinza-lt:#f8fafc;--cinza-bdr:#e2e8f0;
+  --branco:#ffffff;--roxo:#6A1B9A;--vermelho:#B71C1C;--laranja:#E65100;--rosa:#AD1457;--teal:#00695C;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:var(--cinza-dk);min-height:100vh}
+.header{background:var(--azul);position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--verde)}
+.header::after{content:'';position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.03)}
+.header-inner{max-width:1100px;margin:0 auto;padding:36px 48px 32px 52px;position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.header-title{font-family:'DM Serif Display',serif;font-size:clamp(24px,4vw,36px);color:#fff;line-height:1.15;letter-spacing:-.3px}
+.header-sub{font-size:13px;color:#90CAF9;margin-top:6px;font-weight:400;letter-spacing:.3px}
+.header-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:11px;font-weight:500;padding:6px 14px;border-radius:100px;white-space:nowrap}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+.section{margin-bottom:48px}
+.section-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--azul);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--cinza-bdr)}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--azul);color:#fff;border-radius:50%;font-size:12px;font-weight:600;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.kpi-card{background:var(--branco);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);border-top:3px solid var(--cor,var(--azul-md));transition:transform .2s,box-shadow .2s}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.kpi-label{font-size:11px;font-weight:500;color:var(--cinza-md);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.kpi-value{font-family:'DM Serif Display',serif;font-size:24px;color:var(--cor,var(--azul));line-height:1;margin-bottom:4px}
+.kpi-sub{font-size:11px;color:var(--cinza-md)}
+.chart-card{background:var(--branco);border-radius:var(--radius-lg);padding:28px;box-shadow:var(--shadow);margin-bottom:20px}
+.chart-card h3{font-family:'DM Serif Display',serif;font-size:16px;color:var(--azul);margin-bottom:20px;font-style:italic}
+.chart-wrap{width:100%;position:relative}
+.chart-wrap canvas{width:100%!important;display:block}
+.table-card{background:var(--branco);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;overflow-x:auto}
+.table-card table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+.table-card thead th{background:var(--azul);color:#fff;padding:11px 14px;text-align:left;font-weight:500;font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
+.table-card thead th:not(:first-child){text-align:right}
+.table-card tbody tr{border-bottom:1px solid var(--cinza-bdr);transition:background .15s}
+.table-card tbody tr:last-child{border-bottom:none}
+.table-card tbody tr:hover{background:var(--cinza-lt)}
+.table-card tbody tr.total-row{background:var(--verde-lt);font-weight:600;border-top:2px solid var(--verde-bdr)}
+.table-card tbody tr.alt{background:#fafcfe}
+.table-card td{padding:9px 14px;color:var(--cinza-dk);white-space:nowrap}
+.table-card td:not(:first-child){text-align:right}
+.medico-nome{display:flex;align-items:center;gap:8px}
+.medico-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.badge-pct{display:inline-block;background:var(--cinza-lt);color:var(--cinza-md);border:1px solid var(--cinza-bdr);border-radius:100px;font-size:10px;font-weight:600;padding:2px 8px}
+.insight{border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;border-left:4px solid var(--cor,var(--verde));background:var(--bg,var(--verde-lt));display:flex;gap:14px;align-items:flex-start}
+.insight-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.insight-title{font-size:13px;font-weight:600;color:var(--cor,var(--verde));margin-bottom:4px}
+.insight-text{font-size:13px;color:#374151;line-height:1.6}
+.footer{text-align:center;color:var(--cinza-md);font-size:12px;padding:0 24px 48px}
+@media(max-width:640px){.header-inner{padding:24px 20px 20px 26px}.container{padding:24px 16px 60px}.chart-card{padding:18px 14px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Relatório de<br>Desempenho</div>
+      <div class="header-sub">Life Varizes &nbsp;·&nbsp; Todos os Médicos &nbsp;·&nbsp; Jan–Jul 2026</div>
+    </div>
+    <div class="header-badge">Visão Consolidada</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- SEÇÃO 1: VISÃO GERAL -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">1</span> Visão Geral da Clínica</div>
+    <div class="kpi-grid" id="kpiGeral"></div>
+    <div class="chart-card">
+      <h3>Faturamento mensal — Life Varizes (jan–jul 2026)</h3>
+      <div class="chart-wrap"><canvas id="cGeral" height="260"></canvas></div>
+    </div>
+    <div class="insight" style="--cor:var(--verde);--bg:var(--verde-lt)">
+      <div class="insight-icon">📊</div>
+      <div>
+        <div class="insight-title">Análise consolidada</div>
+        <div class="insight-text" id="insightGeral"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2: POR MÉDICO -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">2</span> Desempenho por Médico</div>
+    <div class="chart-card">
+      <h3>Evolução mensal por médico</h3>
+      <div class="chart-wrap"><canvas id="cMedicos" height="290"></canvas></div>
+    </div>
+    <div class="table-card">
+      <table id="tabelaMedicos">
+        <thead><tr id="theadMedicos"></tr></thead>
+        <tbody id="tbodyMedicos"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3: PARTICIPAÇÃO -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">3</span> Participação no Faturamento</div>
+    <div class="chart-card">
+      <h3>Distribuição do faturamento total por médico</h3>
+      <div class="chart-wrap"><canvas id="cPizza" height="280"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4: CONCLUSÕES -->
+  <div class="section">
+    <div class="section-title"><span class="section-num">4</span> Conclusões</div>
+    <div id="conclusoes"></div>
+  </div>
+
+</div>
+<footer class="footer">Life Varizes &nbsp;·&nbsp; Relatório de Desempenho &nbsp;·&nbsp; Dados extraídos do sistema de faturamento &nbsp;·&nbsp; Jan–Jul 2026</footer>
+
+<script>
+const MESES = ["Janeiro", "Fevereiro", "Mar\u00e7o", "Abril", "Maio", "Junho", "Julho"];
+const ABREV = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+const MEDICOS = {"Maíra de Freitas Vilela": [83705, 66802, 79786, 58971, 107007, 109543, 100377], "João Pedro Piretti": [40343, 35747, 35704, 8444, 43665, 61388, 40516], "Luiz Eduardo Almeida Silva": [28724, 25464, 32325, 39686, 42042, 24050, 37618], "Davi Douglas Heckmann": [36279, 23927, 39685, 18901, 18438, 19200, 13607], "Marilene Carla Lopes": [2356, 3415, 12341, 7400, 5300, 7317, 3284], "Taina Alves Martins Cordeiro": [3969, 0, 0, 0, 0, 0, 0]};
+
+const CORES = ['#1F6B2E','#185FA5','#6A1B9A','#E65100','#AD1457','#00695C'];
+const nomes = Object.keys(MEDICOS);
+
+const brl = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+
+// ── Totais gerais ──────────────────────────────────
+function totalMes(i) {
+  return nomes.reduce((s, n) => s + MEDICOS[n][i], 0);
+}
+const totaisMensais = ABREV.map((_,i) => totalMes(i));
+const totalGeral = totaisMensais.reduce((a,b)=>a+b,0);
+
+function totalMedico(nome) {
+  return MEDICOS[nome].reduce((a,b)=>a+b,0);
+}
+
+// ── CANVAS CHART ENGINE (linha) ─────────────────────
+function drawLineChart(canvasId, datasets, labels, opts) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || canvas.parentElement.offsetWidth || 800;
+  const H = parseInt(canvas.getAttribute('height')) || 260;
+  canvas.width  = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const legendH = (opts && opts.legend) ? 26 : 0;
+  const PAD = { top: 16+legendH, right: 20, bottom: 40, left: 68 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+  ctx.clearRect(0,0,W,H);
+
+  const allVals = datasets.flatMap(d => d.data.filter(v => v != null));
+  const maxV = Math.max(...allVals) * 1.15;
+  const minV = 0;
+  const xPos = (i,total) => PAD.left + (i/(total-1))*cW;
+  const yPos = v => PAD.top + cH - ((v-minV)/(maxV-minV))*cH;
+
+  ctx.font = '10.5px DM Sans, sans-serif';
+  ctx.fillStyle = '#94a3b8';
+  ctx.textAlign = 'right';
+  for (let i=0;i<=5;i++) {
+    const v = minV + (maxV-minV)*(i/5);
+    const y = yPos(v);
+    ctx.strokeStyle = 'rgba(0,0,0,.06)';
+    ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(PAD.left,y); ctx.lineTo(W-PAD.right,y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillText('R$ '+(v>=1000?(v/1000).toFixed(0)+'k':v.toFixed(0)), PAD.left-6, y+3);
+  }
+  ctx.textAlign='center'; ctx.fillStyle='#64748b'; ctx.font='11px DM Sans, sans-serif';
+  labels.forEach((l,i)=>ctx.fillText(l, xPos(i,labels.length), H-PAD.bottom+18));
+
+  datasets.forEach(ds => {
+    const pts = ds.data.map((v,i)=> v!=null ? {x:xPos(i,labels.length),y:yPos(v),v} : null);
+    const valid = pts.filter(Boolean);
+    if (!valid.length) return;
+    if (ds.fillColor) {
+      ctx.beginPath(); ctx.moveTo(valid[0].x, PAD.top+cH);
+      valid.forEach(p=>ctx.lineTo(p.x,p.y));
+      ctx.lineTo(valid[valid.length-1].x, PAD.top+cH);
+      ctx.closePath(); ctx.fillStyle = ds.fillColor; ctx.fill();
+    }
+    ctx.beginPath(); ctx.setLineDash(ds.dash||[]);
+    ctx.strokeStyle = ds.color; ctx.lineWidth = ds.lineWidth||2.2;
+    ctx.lineJoin='round'; ctx.lineCap='round';
+    let first=true;
+    valid.forEach(p=>{ first?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y); first=false; });
+    ctx.stroke(); ctx.setLineDash([]);
+    valid.forEach(p=>{
+      ctx.beginPath(); ctx.arc(p.x,p.y,ds.pointR||4,0,Math.PI*2);
+      ctx.fillStyle='#fff'; ctx.fill();
+      ctx.strokeStyle=ds.color; ctx.lineWidth=1.8; ctx.stroke();
+    });
+    if (ds.showLabels) {
+      ctx.font='bold 9px DM Sans, sans-serif'; ctx.fillStyle=ds.color; ctx.textAlign='center';
+      valid.forEach(p=>ctx.fillText('R$\u00a0'+Math.round(p.v/1000).toFixed(0)+'k', p.x, p.y-10));
+    }
+  });
+
+  if (opts && opts.legend && opts.legend.length) {
+    const items = opts.legend;
+    ctx.font = '10.5px DM Sans, sans-serif';
+    let totalW = 0;
+    const widths = items.map(lg => { const w = ctx.measureText(lg.label).width + 22; totalW += w; return w; });
+    let lx = (W - totalW)/2;
+    items.forEach((lg,i)=>{
+      ctx.fillStyle = lg.color; ctx.fillRect(lx, 8, 12, 3);
+      ctx.fillStyle = '#374151'; ctx.textAlign='left';
+      ctx.fillText(lg.label, lx+16, 13);
+      lx += widths[i];
+    });
+  }
+}
+
+// ── PIZZA ─────────────────────────────────────────
+function drawPieChart(canvasId, data, labels, colors) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 600;
+  const H = parseInt(canvas.getAttribute('height')) || 280;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+
+  const total = data.reduce((a,b)=>a+b,0);
+  const cx = W*0.32, cy = H/2, r = Math.min(cx-20, H/2-20);
+  let ang = -Math.PI/2;
+
+  data.forEach((v,i)=>{
+    const slice = (v/total)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,ang,ang+slice);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    // rótulo %
+    if (v/total > 0.03) {
+      const midAng = ang + slice/2;
+      const lx = cx + Math.cos(midAng)*r*0.68;
+      const ly = cy + Math.sin(midAng)*r*0.68;
+      ctx.fillStyle = '#fff'; ctx.font='bold 11px DM Sans, sans-serif'; ctx.textAlign='center';
+      ctx.fillText((v/total*100).toFixed(0)+'%', lx, ly);
+    }
+    ang += slice;
+  });
+
+  // legenda
+  const lx0 = cx + r + 40;
+  let ly0 = cy - (labels.length*22)/2 + 8;
+  ctx.textAlign = 'left';
+  labels.forEach((l,i)=>{
+    ctx.fillStyle = colors[i];
+    ctx.fillRect(lx0, ly0-9, 12, 12);
+    ctx.fillStyle = '#374151'; ctx.font='11.5px DM Sans, sans-serif';
+    ctx.fillText(l + '  ' + brl(data[i]), lx0+18, ly0+1);
+    ly0 += 22;
+  });
+}
+
+// ── RENDER GRÁFICOS ─────────────────────────────────
+function desenharGraficos() {
+  drawLineChart('cGeral', [{
+    data: totaisMensais, color:'#1F6B2E', fillColor:'rgba(31,107,46,.10)',
+    showLabels:true, lineWidth:2.5, pointR:5
+  }], ABREV, {});
+
+  const dsMedicos = nomes.map((n,i)=>({
+    data: MEDICOS[n], color: CORES[i], lineWidth:2.2, pointR:4
+  }));
+  drawLineChart('cMedicos', dsMedicos, ABREV, {
+    legend: nomes.map((n,i)=>({color:CORES[i], label:n.split(' ')[0]+' '+(n.split(' ')[1]||'')}))
+  });
+
+  const totais = nomes.map(totalMedico);
+  drawPieChart('cPizza', totais, nomes, CORES);
+}
+
+// ── KPIs ─────────────────────────────────────────────
+function renderKPI(id, cards) {
+  document.getElementById(id).innerHTML = cards.map(([label,val,sub,cor]) =>
+    `<div class="kpi-card" style="--cor:${cor}">
+      <div class="kpi-label">${label}</div>
+      <div class="kpi-value">${val}</div>
+      <div class="kpi-sub">${sub}</div>
+    </div>`).join('');
+}
+
+function renderKPIs() {
+  const media = totalGeral/7;
+  const maxI = totaisMensais.indexOf(Math.max(...totaisMensais));
+  const minI = totaisMensais.indexOf(Math.min(...totaisMensais));
+  const totais = nomes.map(totalMedico);
+  renderKPI('kpiGeral', [
+    ['Faturamento Total', brl(totalGeral), 'Jan–Jul 2026 · toda a clínica', '#1F6B2E'],
+    ['Média Mensal', brl(media), 'referência de desempenho', '#185FA5'],
+    ['Melhor Mês', MESES[maxI], brl(totaisMensais[maxI]), '#6A1B9A'],
+    ['Mês Mais Fraco', MESES[minI], brl(totaisMensais[minI]), '#B71C1C'],
+  ]);
+  document.getElementById('insightGeral').textContent =
+    `A clínica faturou ${brl(totalGeral)} entre janeiro e julho de 2026, com média mensal de ${brl(media)}. `+
+    `${MESES[maxI]} foi o melhor mês (${brl(totaisMensais[maxI])}), enquanto ${MESES[minI]} teve o menor volume (${brl(totaisMensais[minI])}).`;
+}
+
+// ── TABELA POR MÉDICO ────────────────────────────────
+function renderTabelaMedicos() {
+  const thead = document.getElementById('theadMedicos');
+  thead.innerHTML = '<th>Médico</th>' + ABREV.map(a=>`<th>${a}</th>`).join('') + '<th>Total</th><th>%</th>';
+
+  const totais = nomes.map(totalMedico);
+  const ordenado = nomes.map((n,i)=>({n,i,t:totais[i]})).sort((a,b)=>b.t-a.t);
+
+  document.getElementById('tbodyMedicos').innerHTML = ordenado.map((o,pos) => {
+    const n = o.n, i = o.i, t = o.t;
+    const pct = (t/totalGeral*100).toFixed(1).replace('.',',');
+    return `<tr class="${pos%2===0?'alt':''}">
+      <td><div class="medico-nome"><span class="medico-dot" style="background:${CORES[i]}"></span>${n}</div></td>
+      ${MEDICOS[n].map(v=>`<td>${brl(v)}</td>`).join('')}
+      <td style="font-weight:600">${brl(t)}</td>
+      <td><span class="badge-pct">${pct}%</span></td>
+    </tr>`;
+  }).join('') +
+  `<tr class="total-row">
+    <td>TOTAL CLÍNICA</td>
+    ${totaisMensais.map(v=>`<td>${brl(v)}</td>`).join('')}
+    <td>${brl(totalGeral)}</td>
+    <td>100%</td>
+  </tr>`;
+}
+
+// ── CONCLUSÕES ───────────────────────────────────────
+function renderConclusoes() {
+  const totais = nomes.map(totalMedico);
+  const ordenado = nomes.map((n,i)=>({n,t:totais[i]})).sort((a,b)=>b.t-a.t);
+  const top = ordenado[0], segundo = ordenado[1];
+  const media = totalGeral/7;
+  const maxMesI = totaisMensais.indexOf(Math.max(...totaisMensais));
+  const minMesI = totaisMensais.indexOf(Math.min(...totaisMensais));
+  const variacao = ((totaisMensais[6]-totaisMensais[0])/totaisMensais[0]*100).toFixed(1).replace('.',',');
+
+  const items = [
+    ['📈','#1F6B2E','var(--verde-lt)','Trajetória do período',
+      `O faturamento de julho (${brl(totaisMensais[6])}) representa uma variação de ${variacao.startsWith('-')?'':''}${variacao}% em relação a janeiro (${brl(totaisMensais[0])}), com pico em ${MESES[maxMesI]} (${brl(totaisMensais[maxMesI])}).`],
+    ['⚠','#E65100','#FFF3E0','Ponto de atenção',
+      `${MESES[minMesI]} registrou o menor faturamento do período (${brl(totaisMensais[minMesI])}). Vale avaliar se houve fatores sazonais ou reduções pontuais na agenda de algum profissional.`],
+    ['◉','#6A1B9A','#F3E5F5','Distribuição da equipe',
+      `A equipe é composta por ${nomes.length} médicos. A tabela e os gráficos acima detalham a contribuição individual de cada profissional para o resultado consolidado da clínica no período.`],
+    ['📊','#185FA5','var(--azul-lt)','Média mensal da clínica',
+      `A média de faturamento mensal da Life Varizes no período foi de ${brl(media)}, servindo como referência para acompanhamento de metas e planejamento dos próximos meses.`],
+  ];
+  document.getElementById('conclusoes').innerHTML = items.map(([icon,cor,bg,titulo,texto])=>
+    `<div class="insight" style="--cor:${cor};--bg:${bg}">
+      <div class="insight-icon">${icon}</div>
+      <div><div class="insight-title">${titulo}</div><div class="insight-text">${texto}</div></div>
+    </div>`).join('');
+}
+
+// ── RENDER PRINCIPAL ─────────────────────────────────
+function renderAll() {
+  renderKPIs();
+  renderTabelaMedicos();
+  renderConclusoes();
+  setTimeout(desenharGraficos, 80);
+}
+renderAll();
+window.addEventListener('resize', () => { clearTimeout(window._rzt); window._rzt = setTimeout(desenharGraficos, 150); });
+</script>
+</body>
+</html>
