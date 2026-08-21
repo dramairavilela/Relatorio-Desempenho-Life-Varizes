@@ -355,6 +355,7 @@ function renderConclusoes() {
   const minMesI = totaisMensais.indexOf(Math.min(...totaisMensais));
   const variacao = ((totaisMensais[6]-totaisMensais[0])/totaisMensais[0]*100).toFixed(1).replace('.',',');
 
+  const projecao2026 = media * 12;
   const items = [
     ['📈','#1F6B2E','var(--verde-lt)','Trajetória do período',
       `O faturamento de julho (${brl(totaisMensais[6])}) representa uma variação de ${variacao.startsWith('-')?'':''}${variacao}% em relação a janeiro (${brl(totaisMensais[0])}), com pico em ${MESES[maxMesI]} (${brl(totaisMensais[maxMesI])}).`],
@@ -364,6 +365,8 @@ function renderConclusoes() {
       `A equipe é composta por ${nomes.length} médicos. A tabela e os gráficos acima detalham a contribuição individual de cada profissional para o resultado consolidado da clínica no período.`],
     ['📊','#185FA5','var(--azul-lt)','Média mensal da clínica',
       `A média de faturamento mensal da Life Varizes no período foi de ${brl(media)}, servindo como referência para acompanhamento de metas e planejamento dos próximos meses.`],
+    ['🎯','#00695C','#E0F2F1','Projeção 2026',
+      `Mantida a média mensal observada entre janeiro e julho (${brl(media)}/mês), o faturamento anual projetado para 2026 é de aproximadamente ${brl(projecao2026)}. Esta é uma estimativa linear e não considera sazonalidade específica do segundo semestre.`],
   ];
   document.getElementById('conclusoes').innerHTML = items.map(([icon,cor,bg,titulo,texto])=>
     `<div class="insight" style="--cor:${cor};--bg:${bg}">
