@@ -68,7 +68,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:var(--cinza-dk);m
   <div class="header-inner">
     <div>
       <div class="header-title">Relatório de<br>Desempenho</div>
-      <div class="header-sub">Life Varizes &nbsp;·&nbsp; Todos os Médicos &nbsp;·&nbsp; Jan–Ago 2026</div>
+      <div class="header-sub">Life Varizes &nbsp;·&nbsp; Todos os Médicos &nbsp;·&nbsp; Jan–Set 2026</div>
     </div>
     <div class="header-badge">Visão Consolidada</div>
   </div>
@@ -80,7 +80,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:var(--cinza-dk);m
     <div class="section-title"><span class="section-num">1</span> Visão Geral da Clínica</div>
     <div class="kpi-grid" id="kpiGeral"></div>
     <div class="chart-card">
-      <h3>Faturamento mensal — Life Varizes (jan–ago 2026)</h3>
+      <h3>Faturamento mensal — Life Varizes (jan–set 2026)</h3>
       <div class="chart-wrap"><canvas id="cGeral" height="260"></canvas></div>
     </div>
     <div class="insight" style="--cor:var(--verde);--bg:var(--verde-lt)">
@@ -120,12 +120,12 @@ body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:var(--cinza-dk);m
   </div>
 
 </div>
-<footer class="footer">Life Varizes &nbsp;·&nbsp; Relatório de Desempenho &nbsp;·&nbsp; Dados extraídos do sistema de faturamento (Medware) &nbsp;·&nbsp; Jan–Ago 2026</footer>
+<footer class="footer">Life Varizes &nbsp;·&nbsp; Relatório de Desempenho &nbsp;·&nbsp; Dados extraídos do sistema de faturamento (Medware) &nbsp;·&nbsp; Jan–Set 2026</footer>
 
 <script>
-const MESES = ["Janeiro", "Fevereiro", "Mar\u00e7o", "Abril", "Maio", "Junho", "Julho", "Agosto"];
-const ABREV = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago"];
-const MEDICOS = {"Maíra de Freitas Vilela": [83705, 66802, 79786, 58971, 107007, 109543, 100377, 142534], "João Pedro Piretti": [40343, 35747, 35704, 8444, 43665, 61388, 45176, 47119], "Luiz Eduardo Almeida Silva": [28724, 25464, 32325, 39686, 42042, 24050, 37940, 63518], "Davi Douglas Heckmann": [36279, 23927, 39685, 18901, 18438, 19200, 13607, 13942], "Marilene Carla Lopes": [2356, 3415, 12341, 7400, 5300, 7317, 3284, 9195], "Taina Alves Martins Cordeiro": [3969, 0, 0, 0, 0, 0, 0, 0]};
+const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro"];
+const ABREV = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set"];
+const MEDICOS = {"Maíra de Freitas Vilela": [83705, 66802, 79786, 58971, 107007, 109543, 100377, 142534, 161443], "João Pedro Piretti": [40343, 35747, 35704, 8444, 43665, 61388, 45176, 47119, 9295], "Luiz Eduardo Almeida Silva": [28724, 25464, 32325, 39686, 42042, 24050, 37940, 63518, 62157], "Davi Douglas Heckmann": [36279, 23927, 39685, 18901, 18438, 19200, 13607, 13942, 2650], "Marilene Carla Lopes": [2356, 3415, 12341, 7400, 5300, 7317, 3284, 9195, 1527], "Taina Alves Martins Cordeiro": [3969, 0, 0, 0, 0, 0, 0, 0, 0]};
 
 const CORES = ['#1F6B2E','#185FA5','#6A1B9A','#E65100','#AD1457','#00695C'];
 const nomes = Object.keys(MEDICOS);
@@ -232,13 +232,13 @@ function renderKPIs(){
   const maxI=totaisMensais.indexOf(Math.max(...totaisMensais));
   const minI=totaisMensais.indexOf(Math.min(...totaisMensais));
   renderKPI('kpiGeral',[
-    ['Faturamento Total',brl(totalGeral),'Jan–Ago 2026 · toda a clínica','#1F6B2E'],
+    ['Faturamento Total',brl(totalGeral),'Jan–Set 2026 · toda a clínica','#1F6B2E'],
     ['Média Mensal',brl(media),'referência de desempenho','#185FA5'],
     ['Melhor Mês',MESES[maxI],brl(totaisMensais[maxI]),'#6A1B9A'],
     ['Mês Mais Fraco',MESES[minI],brl(totaisMensais[minI]),'#B71C1C'],
   ]);
   document.getElementById('insightGeral').textContent =
-    `A clínica faturou ${brl(totalGeral)} entre janeiro e agosto de 2026, com média mensal de ${brl(media)}. `+
+    `A clínica faturou ${brl(totalGeral)} entre janeiro e setembro de 2026, com média mensal de ${brl(media)}. `+
     `${MESES[maxI]} foi o melhor mês (${brl(totaisMensais[maxI])}), enquanto ${MESES[minI]} teve o menor volume (${brl(totaisMensais[minI])}).`;
 }
 
@@ -269,7 +269,7 @@ function renderConclusoes(){
     ['📊','#185FA5','var(--azul-lt)','Média mensal da clínica',
       `A média de faturamento mensal da Life Varizes no período foi de ${brl(media)}, servindo como referência para acompanhamento de metas e planejamento dos próximos meses.`],
     ['🎯','#00695C','#E0F2F1','Projeção 2026',
-      `Mantida a média mensal observada entre janeiro e agosto (${brl(media)}/mês), o faturamento anual projetado para 2026 é de aproximadamente ${brl(projecao)}. Esta é uma estimativa linear e não considera sazonalidade específica dos meses restantes.`],
+      `Mantida a média mensal observada entre janeiro e setembro (${brl(media)}/mês), o faturamento anual projetado para 2026 é de aproximadamente ${brl(projecao)}. Esta é uma estimativa linear e não considera sazonalidade específica dos meses restantes.`],
   ];
   document.getElementById('conclusoes').innerHTML=items.map(([icon,cor,bg,titulo,texto])=>
     `<div class="insight" style="--cor:${cor};--bg:${bg}"><div class="insight-icon">${icon}</div><div><div class="insight-title">${titulo}</div><div class="insight-text">${texto}</div></div></div>`).join('');
